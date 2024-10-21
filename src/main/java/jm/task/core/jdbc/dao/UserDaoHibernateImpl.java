@@ -5,6 +5,10 @@ import jm.task.core.jdbc.model.User;
 import jm.task.core.jdbc.util.Util;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.cfg.Configuration;
+import org.hibernate.mapping.Property;
+
+import java.util.Properties;
 import java.util.logging.Logger;
 import java.util.logging.Level;
 
@@ -15,10 +19,9 @@ public class UserDaoHibernateImpl implements UserDao {
     private SessionFactory sessionFactory;
 
     public UserDaoHibernateImpl() {
-        sessionFactory = Util.getHibConnection();
-
+        //sessionFactory = Util.getHibConnection();
+        sessionFactory = new Configuration().addAnnotatedClass(User.class).buildSessionFactory();
     }
-
 
     @Override
     public void createUsersTable() {
@@ -28,8 +31,6 @@ public class UserDaoHibernateImpl implements UserDao {
             session.getTransaction().commit();
             logger.log(Level.INFO, "UserDaoHibernateImpl: create table!");
         }
-
-
     }
 
     @Override
@@ -50,10 +51,8 @@ public class UserDaoHibernateImpl implements UserDao {
             session.save(user);
             session.getTransaction().commit();
             logger.log(Level.INFO, "UserDaoHibernateImpl: " + name + " add to database");
-
         } catch (Exception ex) {
-
-            throw new OperationException("Save user exception: "+ex);
+            throw new OperationException("Save user exception: " + ex);
         }
     }
 
@@ -68,7 +67,6 @@ public class UserDaoHibernateImpl implements UserDao {
             session.getTransaction().commit();
             logger.log(Level.INFO, "UserDaoHibernateImpl: remove user with id=" + id);
         }
-
     }
 
     @Override
