@@ -14,15 +14,15 @@ public class UserDaoJDBCImpl implements UserDao {
     private static final String SAVE_USER = "INSERT INTO public.users (name, lastname, age) VALUES (?,?,?)";
     private static final String REMOVE_USER = "DELETE FROM public.users WHERE id = ?";
     private static final String GET_ALL_USERS = "SELECT id, name, lastname, age FROM public.users";
-    private Connection conn;
+    private Connection connection;
 
     public UserDaoJDBCImpl() {
-        conn = Util.getConnection();
+        connection = Util.getConnection();
     }
 
     public void createUsersTable() {
-        try (Statement stmt = conn.createStatement()) {
-            stmt.executeUpdate(CREATE_TABLE);
+        try (Statement statement = connection.createStatement()) {
+            statement.executeUpdate(CREATE_TABLE);
             System.out.println("Create table!");
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -30,56 +30,52 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public void dropUsersTable() {
-        try (Statement stmt = conn.createStatement()) {
-            stmt.executeUpdate(DROP_TABLE);
+        try (Statement statement = connection.createStatement()) {
+            statement.executeUpdate(DROP_TABLE);
             System.out.println("Drop table!");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-
     }
 
     public void saveUser(String name, String lastName, byte age) {
-        try (PreparedStatement stmt = conn.prepareStatement(SAVE_USER, Statement.RETURN_GENERATED_KEYS)) {
-            stmt.setString(1, name);
-            stmt.setString(2, lastName);
-            stmt.setByte(3, age);
-            stmt.executeUpdate();
+        try (PreparedStatement preparedStatement = connection.prepareStatement(SAVE_USER, Statement.RETURN_GENERATED_KEYS)) {
+            preparedStatement.setString(1, name);
+            preparedStatement.setString(2, lastName);
+            preparedStatement.setByte(3, age);
+            preparedStatement.executeUpdate();
             System.out.println("Save user!");
         } catch (
                 SQLException e) {
             throw new RuntimeException(e);
         }
-
     }
 
     public void removeUserById(long id) {
-        try (PreparedStatement stmt = conn.prepareStatement(REMOVE_USER, Statement.RETURN_GENERATED_KEYS)) {
-            stmt.setLong(1, id);
-            stmt.executeUpdate();
+        try (PreparedStatement preparedStatement = connection.prepareStatement(REMOVE_USER, Statement.RETURN_GENERATED_KEYS)) {
+            preparedStatement.setLong(1, id);
+            preparedStatement.executeUpdate();
             System.out.println("Remove user!");
         } catch (
                 SQLException e) {
             throw new RuntimeException(e);
         }
-
     }
 
     public List<User> getAllUsers() {
-        try (PreparedStatement stmt = conn.prepareStatement(GET_ALL_USERS)) {
-            ResultSet rs = stmt.executeQuery();
+        try (PreparedStatement preparedStatement = connection.prepareStatement(GET_ALL_USERS)) {
+            ResultSet resultSet = preparedStatement.executeQuery();
             List<User> users = new ArrayList<>();
-            while (rs.next()) {
+            while (resultSet.next()) {
                 User user = new User();
-                user.setId(rs.getLong("id"));
-                user.setName(rs.getString("name"));
-                user.setLastName(rs.getString("lastname"));
-                user.setAge(rs.getByte("age"));
+                user.setId(resultSet.getLong("id"));
+                user.setName(resultSet.getString("name"));
+                user.setLastName(resultSet.getString("lastname"));
+                user.setAge(resultSet.getByte("age"));
                 users.add(user);
                 System.out.println("Loaded user! " + user.getId());
             }
             return users;
-
         } catch (
                 SQLException e) {
             throw new RuntimeException(e);
@@ -87,12 +83,11 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public void cleanUsersTable() {
-        try (Statement stmt = conn.createStatement()) {
-            stmt.executeUpdate(CLEAN_TABLE);
+        try (Statement statement = connection.createStatement()) {
+            statement.executeUpdate(CLEAN_TABLE);
             System.out.println("Clean table!");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-
     }
 }

@@ -8,18 +8,10 @@ import org.hibernate.SessionFactory;
 import java.util.logging.Logger;
 import java.util.logging.Level;
 
-import javax.security.auth.login.Configuration;
-import java.sql.Connection;
 import java.util.List;
 
 public class UserDaoHibernateImpl implements UserDao {
-    /*private static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS public.users (id BIGSERIAL PRIMARY KEY, name VARCHAR(50) NOT NULL, lastname VARCHAR(50) NOT NULL, age SMALLINT NOT NULL);";
-    private static final String DROP_TABLE = "DROP TABLE IF EXISTS public.users";
-    private static final String CLEAN_TABLE = "TRUNCATE TABLE public.users";
-    private static final String SAVE_USER = "INSERT INTO public.users (name, lastname, age) VALUES (?,?,?)";
-    private static final String REMOVE_USER = "DELETE FROM public.users WHERE id = ?";
-    private static final String GET_ALL_USERS = "SELECT id, name, lastname, age FROM public.users";*/
-    private final Logger log = Logger.getLogger(UserDaoHibernateImpl.class.getName());
+    private final Logger logger = Logger.getLogger(UserDaoHibernateImpl.class.getName());
     private SessionFactory sessionFactory;
 
     public UserDaoHibernateImpl() {
@@ -34,7 +26,7 @@ public class UserDaoHibernateImpl implements UserDao {
             session.beginTransaction();
             session.createNativeQuery("CREATE TABLE IF NOT EXISTS public.users (id BIGSERIAL PRIMARY KEY, name VARCHAR(50) NOT NULL, lastname VARCHAR(50) NOT NULL, age SMALLINT NOT NULL)", User.class).executeUpdate();
             session.getTransaction().commit();
-            log.log(Level.INFO, "UserDaoHibernateImpl: create table!");
+            logger.log(Level.INFO, "UserDaoHibernateImpl: create table!");
         }
 
 
@@ -46,7 +38,7 @@ public class UserDaoHibernateImpl implements UserDao {
             session.beginTransaction();
             session.createNativeQuery("DROP TABLE IF EXISTS public.users", User.class).executeUpdate();
             session.getTransaction().commit();
-            log.log(Level.INFO, "UserDaoHibernateImpl: drop table");
+            logger.log(Level.INFO, "UserDaoHibernateImpl: drop table");
         }
     }
 
@@ -57,7 +49,7 @@ public class UserDaoHibernateImpl implements UserDao {
             User user = new User(name, lastName, age);
             session.save(user);
             session.getTransaction().commit();
-            log.log(Level.INFO, "UserDaoHibernateImpl: " + name + " add to database");
+            logger.log(Level.INFO, "UserDaoHibernateImpl: " + name + " add to database");
 
         } catch (Exception ex) {
 
@@ -74,7 +66,7 @@ public class UserDaoHibernateImpl implements UserDao {
                 session.delete(user);
             }
             session.getTransaction().commit();
-            log.log(Level.INFO, "UserDaoHibernateImpl: remove user with id=" + id);
+            logger.log(Level.INFO, "UserDaoHibernateImpl: remove user with id=" + id);
         }
 
     }
@@ -86,7 +78,7 @@ public class UserDaoHibernateImpl implements UserDao {
             List<User> users = session.createQuery("from User").list();
             session.getTransaction().commit();
             for (var item : users) {
-                log.log(Level.INFO, "UserDaoHibernateImpl: find user " + item.toString());
+                logger.log(Level.INFO, "UserDaoHibernateImpl: find user " + item.toString());
             }
             return users;
         }
@@ -98,7 +90,7 @@ public class UserDaoHibernateImpl implements UserDao {
             session.beginTransaction();
             session.createQuery("delete User").executeUpdate();
             session.getTransaction().commit();
-            log.log(Level.INFO, "UserDaoHibernateImpl: clean table");
+            logger.log(Level.INFO, "UserDaoHibernateImpl: clean table");
         }
     }
 }
