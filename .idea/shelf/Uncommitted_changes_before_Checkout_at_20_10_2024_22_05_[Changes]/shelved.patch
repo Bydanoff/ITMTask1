@@ -1,0 +1,292 @@
+Index: src/main/java/jm/task/core/jdbc/dao/UserDaoHibernateImpl.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package jm.task.core.jdbc.dao;\r\n\r\nimport jm.task.core.jdbc.exception.OperationException;\r\nimport jm.task.core.jdbc.model.User;\r\nimport jm.task.core.jdbc.util.Util;\r\nimport org.hibernate.Session;\r\nimport org.hibernate.SessionFactory;\r\nimport java.util.logging.Logger;\r\nimport java.util.logging.Level;\r\n\r\nimport javax.security.auth.login.Configuration;\r\nimport java.sql.Connection;\r\nimport java.util.List;\r\n\r\npublic class UserDaoHibernateImpl implements UserDao {\r\n    /*private static final String CREATE_TABLE = \"CREATE TABLE IF NOT EXISTS public.users (id BIGSERIAL PRIMARY KEY, name VARCHAR(50) NOT NULL, lastname VARCHAR(50) NOT NULL, age SMALLINT NOT NULL);\";\r\n    private static final String DROP_TABLE = \"DROP TABLE IF EXISTS public.users\";\r\n    private static final String CLEAN_TABLE = \"TRUNCATE TABLE public.users\";\r\n    private static final String SAVE_USER = \"INSERT INTO public.users (name, lastname, age) VALUES (?,?,?)\";\r\n    private static final String REMOVE_USER = \"DELETE FROM public.users WHERE id = ?\";\r\n    private static final String GET_ALL_USERS = \"SELECT id, name, lastname, age FROM public.users\";*/\r\n    private final Logger log = Logger.getLogger(UserDaoHibernateImpl.class.getName());\r\n    private SessionFactory sessionFactory;\r\n\r\n    public UserDaoHibernateImpl() {\r\n        sessionFactory = Util.getHibConnection();\r\n\r\n    }\r\n\r\n\r\n    @Override\r\n    public void createUsersTable() {\r\n        try (Session session = sessionFactory.openSession()) {\r\n            session.beginTransaction();\r\n            session.createNativeQuery(\"CREATE TABLE IF NOT EXISTS public.users (id BIGSERIAL PRIMARY KEY, name VARCHAR(50) NOT NULL, lastname VARCHAR(50) NOT NULL, age SMALLINT NOT NULL)\", User.class).executeUpdate();\r\n            session.getTransaction().commit();\r\n            log.log(Level.INFO, \"UserDaoHibernateImpl: create table!\");\r\n        }\r\n\r\n\r\n    }\r\n\r\n    @Override\r\n    public void dropUsersTable() {\r\n        try (Session session = sessionFactory.openSession()) {\r\n            session.beginTransaction();\r\n            session.createNativeQuery(\"DROP TABLE IF EXISTS public.users\", User.class).executeUpdate();\r\n            session.getTransaction().commit();\r\n            log.log(Level.INFO, \"UserDaoHibernateImpl: drop table\");\r\n        }\r\n    }\r\n\r\n    @Override\r\n    public void saveUser(String name, String lastName, byte age) {\r\n        try (Session session = sessionFactory.openSession()) {\r\n            session.beginTransaction();\r\n            User user = new User(name, lastName, age);\r\n            session.save(user);\r\n            session.getTransaction().commit();\r\n            log.log(Level.INFO, \"UserDaoHibernateImpl: \" + name + \" add to database\");\r\n\r\n        } catch (Exception ex) {\r\n\r\n            throw new OperationException(\"Save user exception: \"+ex);\r\n        }\r\n    }\r\n\r\n    @Override\r\n    public void removeUserById(long id) {\r\n        try (Session session = sessionFactory.openSession()) {\r\n            session.beginTransaction();\r\n            User user = session.get(User.class, id);\r\n            if (user != null) {\r\n                session.delete(user);\r\n            }\r\n            session.getTransaction().commit();\r\n            log.log(Level.INFO, \"UserDaoHibernateImpl: remove user with id=\" + id);\r\n        }\r\n\r\n    }\r\n\r\n    @Override\r\n    public List<User> getAllUsers() {\r\n        try (Session session = sessionFactory.openSession()) {\r\n            session.beginTransaction();\r\n            List<User> users = session.createQuery(\"from User\").list();\r\n            session.getTransaction().commit();\r\n            for (var item : users) {\r\n                log.log(Level.INFO, \"UserDaoHibernateImpl: find user \" + item.toString());\r\n            }\r\n            return users;\r\n        }\r\n    }\r\n\r\n    @Override\r\n    public void cleanUsersTable() {\r\n        try (Session session = sessionFactory.openSession()) {\r\n            session.beginTransaction();\r\n            session.createQuery(\"delete User\").executeUpdate();\r\n            session.getTransaction().commit();\r\n            log.log(Level.INFO, \"UserDaoHibernateImpl: clean table\");\r\n        }\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/jm/task/core/jdbc/dao/UserDaoHibernateImpl.java b/src/main/java/jm/task/core/jdbc/dao/UserDaoHibernateImpl.java
+--- a/src/main/java/jm/task/core/jdbc/dao/UserDaoHibernateImpl.java	(revision 3bcce1f38345444045b1dee4dd745a4f0ebf7ba3)
++++ b/src/main/java/jm/task/core/jdbc/dao/UserDaoHibernateImpl.java	(date 1729450936074)
+@@ -8,25 +8,16 @@
+ import java.util.logging.Logger;
+ import java.util.logging.Level;
+ 
+-import javax.security.auth.login.Configuration;
+-import java.sql.Connection;
+ import java.util.List;
+ 
+ public class UserDaoHibernateImpl implements UserDao {
+-    /*private static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS public.users (id BIGSERIAL PRIMARY KEY, name VARCHAR(50) NOT NULL, lastname VARCHAR(50) NOT NULL, age SMALLINT NOT NULL);";
+-    private static final String DROP_TABLE = "DROP TABLE IF EXISTS public.users";
+-    private static final String CLEAN_TABLE = "TRUNCATE TABLE public.users";
+-    private static final String SAVE_USER = "INSERT INTO public.users (name, lastname, age) VALUES (?,?,?)";
+-    private static final String REMOVE_USER = "DELETE FROM public.users WHERE id = ?";
+-    private static final String GET_ALL_USERS = "SELECT id, name, lastname, age FROM public.users";*/
+-    private final Logger log = Logger.getLogger(UserDaoHibernateImpl.class.getName());
++
++    private final Logger logger = Logger.getLogger(UserDaoHibernateImpl.class.getName());
+     private SessionFactory sessionFactory;
+ 
+     public UserDaoHibernateImpl() {
+         sessionFactory = Util.getHibConnection();
+-
+     }
+-
+ 
+     @Override
+     public void createUsersTable() {
+@@ -34,10 +25,8 @@
+             session.beginTransaction();
+             session.createNativeQuery("CREATE TABLE IF NOT EXISTS public.users (id BIGSERIAL PRIMARY KEY, name VARCHAR(50) NOT NULL, lastname VARCHAR(50) NOT NULL, age SMALLINT NOT NULL)", User.class).executeUpdate();
+             session.getTransaction().commit();
+-            log.log(Level.INFO, "UserDaoHibernateImpl: create table!");
++            logger.log(Level.INFO, "UserDaoHibernateImpl: create table!");
+         }
+-
+-
+     }
+ 
+     @Override
+@@ -46,7 +35,7 @@
+             session.beginTransaction();
+             session.createNativeQuery("DROP TABLE IF EXISTS public.users", User.class).executeUpdate();
+             session.getTransaction().commit();
+-            log.log(Level.INFO, "UserDaoHibernateImpl: drop table");
++            logger.log(Level.INFO, "UserDaoHibernateImpl: drop table");
+         }
+     }
+ 
+@@ -57,10 +46,8 @@
+             User user = new User(name, lastName, age);
+             session.save(user);
+             session.getTransaction().commit();
+-            log.log(Level.INFO, "UserDaoHibernateImpl: " + name + " add to database");
+-
++            logger.log(Level.INFO, "UserDaoHibernateImpl: " + name + " add to database");
+         } catch (Exception ex) {
+-
+             throw new OperationException("Save user exception: "+ex);
+         }
+     }
+@@ -74,7 +61,7 @@
+                 session.delete(user);
+             }
+             session.getTransaction().commit();
+-            log.log(Level.INFO, "UserDaoHibernateImpl: remove user with id=" + id);
++            logger.log(Level.INFO, "UserDaoHibernateImpl: remove user with id=" + id);
+         }
+ 
+     }
+@@ -86,7 +73,7 @@
+             List<User> users = session.createQuery("from User").list();
+             session.getTransaction().commit();
+             for (var item : users) {
+-                log.log(Level.INFO, "UserDaoHibernateImpl: find user " + item.toString());
++                logger.log(Level.INFO, "UserDaoHibernateImpl: find user " + item.toString());
+             }
+             return users;
+         }
+@@ -98,7 +85,7 @@
+             session.beginTransaction();
+             session.createQuery("delete User").executeUpdate();
+             session.getTransaction().commit();
+-            log.log(Level.INFO, "UserDaoHibernateImpl: clean table");
++            logger.log(Level.INFO, "UserDaoHibernateImpl: clean table");
+         }
+     }
+ }
+Index: src/main/java/jm/task/core/jdbc/dao/UserDaoJDBCImpl.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package jm.task.core.jdbc.dao;\r\n\r\nimport jm.task.core.jdbc.model.User;\r\nimport jm.task.core.jdbc.util.Util;\r\n\r\nimport java.sql.*;\r\nimport java.util.ArrayList;\r\nimport java.util.List;\r\n\r\npublic class UserDaoJDBCImpl implements UserDao {\r\n    private static final String CREATE_TABLE = \"CREATE TABLE IF NOT EXISTS public.users (id BIGSERIAL PRIMARY KEY, name VARCHAR(50) NOT NULL, lastname VARCHAR(50) NOT NULL, age SMALLINT NOT NULL);\";\r\n    private static final String DROP_TABLE = \"DROP TABLE IF EXISTS public.users\";\r\n    private static final String CLEAN_TABLE = \"TRUNCATE TABLE public.users\";\r\n    private static final String SAVE_USER = \"INSERT INTO public.users (name, lastname, age) VALUES (?,?,?)\";\r\n    private static final String REMOVE_USER = \"DELETE FROM public.users WHERE id = ?\";\r\n    private static final String GET_ALL_USERS = \"SELECT id, name, lastname, age FROM public.users\";\r\n    private Connection conn;\r\n\r\n    public UserDaoJDBCImpl() {\r\n        conn = Util.getConnection();\r\n    }\r\n\r\n    public void createUsersTable() {\r\n        try (Statement stmt = conn.createStatement()) {\r\n            stmt.executeUpdate(CREATE_TABLE);\r\n            System.out.println(\"Create table!\");\r\n        } catch (SQLException e) {\r\n            throw new RuntimeException(e);\r\n        }\r\n    }\r\n\r\n    public void dropUsersTable() {\r\n        try (Statement stmt = conn.createStatement()) {\r\n            stmt.executeUpdate(DROP_TABLE);\r\n            System.out.println(\"Drop table!\");\r\n        } catch (SQLException e) {\r\n            throw new RuntimeException(e);\r\n        }\r\n\r\n    }\r\n\r\n    public void saveUser(String name, String lastName, byte age) {\r\n        try (PreparedStatement stmt = conn.prepareStatement(SAVE_USER, Statement.RETURN_GENERATED_KEYS)) {\r\n            stmt.setString(1, name);\r\n            stmt.setString(2, lastName);\r\n            stmt.setByte(3, age);\r\n            stmt.executeUpdate();\r\n            System.out.println(\"Save user!\");\r\n        } catch (\r\n                SQLException e) {\r\n            throw new RuntimeException(e);\r\n        }\r\n\r\n    }\r\n\r\n    public void removeUserById(long id) {\r\n        try (PreparedStatement stmt = conn.prepareStatement(REMOVE_USER, Statement.RETURN_GENERATED_KEYS)) {\r\n            stmt.setLong(1, id);\r\n            stmt.executeUpdate();\r\n            System.out.println(\"Remove user!\");\r\n        } catch (\r\n                SQLException e) {\r\n            throw new RuntimeException(e);\r\n        }\r\n\r\n    }\r\n\r\n    public List<User> getAllUsers() {\r\n        try (PreparedStatement stmt = conn.prepareStatement(GET_ALL_USERS)) {\r\n            ResultSet rs = stmt.executeQuery();\r\n            List<User> users = new ArrayList<>();\r\n            while (rs.next()) {\r\n                User user = new User();\r\n                user.setId(rs.getLong(\"id\"));\r\n                user.setName(rs.getString(\"name\"));\r\n                user.setLastName(rs.getString(\"lastname\"));\r\n                user.setAge(rs.getByte(\"age\"));\r\n                users.add(user);\r\n                System.out.println(\"Loaded user! \" + user.getId());\r\n            }\r\n            return users;\r\n\r\n        } catch (\r\n                SQLException e) {\r\n            throw new RuntimeException(e);\r\n        }\r\n    }\r\n\r\n    public void cleanUsersTable() {\r\n        try (Statement stmt = conn.createStatement()) {\r\n            stmt.executeUpdate(CLEAN_TABLE);\r\n            System.out.println(\"Clean table!\");\r\n        } catch (SQLException e) {\r\n            throw new RuntimeException(e);\r\n        }\r\n\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/jm/task/core/jdbc/dao/UserDaoJDBCImpl.java b/src/main/java/jm/task/core/jdbc/dao/UserDaoJDBCImpl.java
+--- a/src/main/java/jm/task/core/jdbc/dao/UserDaoJDBCImpl.java	(revision 3bcce1f38345444045b1dee4dd745a4f0ebf7ba3)
++++ b/src/main/java/jm/task/core/jdbc/dao/UserDaoJDBCImpl.java	(date 1729450936070)
+@@ -14,15 +14,15 @@
+     private static final String SAVE_USER = "INSERT INTO public.users (name, lastname, age) VALUES (?,?,?)";
+     private static final String REMOVE_USER = "DELETE FROM public.users WHERE id = ?";
+     private static final String GET_ALL_USERS = "SELECT id, name, lastname, age FROM public.users";
+-    private Connection conn;
++    private Connection connection;
+ 
+     public UserDaoJDBCImpl() {
+-        conn = Util.getConnection();
++        connection = Util.getConnection();
+     }
+ 
+     public void createUsersTable() {
+-        try (Statement stmt = conn.createStatement()) {
+-            stmt.executeUpdate(CREATE_TABLE);
++        try (Statement statement = connection.createStatement()) {
++            statement.executeUpdate(CREATE_TABLE);
+             System.out.println("Create table!");
+         } catch (SQLException e) {
+             throw new RuntimeException(e);
+@@ -30,8 +30,8 @@
+     }
+ 
+     public void dropUsersTable() {
+-        try (Statement stmt = conn.createStatement()) {
+-            stmt.executeUpdate(DROP_TABLE);
++        try (Statement statement = connection.createStatement()) {
++            statement.executeUpdate(DROP_TABLE);
+             System.out.println("Drop table!");
+         } catch (SQLException e) {
+             throw new RuntimeException(e);
+@@ -40,11 +40,11 @@
+     }
+ 
+     public void saveUser(String name, String lastName, byte age) {
+-        try (PreparedStatement stmt = conn.prepareStatement(SAVE_USER, Statement.RETURN_GENERATED_KEYS)) {
+-            stmt.setString(1, name);
+-            stmt.setString(2, lastName);
+-            stmt.setByte(3, age);
+-            stmt.executeUpdate();
++        try (PreparedStatement preparedStatement = connection.prepareStatement(SAVE_USER, Statement.RETURN_GENERATED_KEYS)) {
++            preparedStatement.setString(1, name);
++            preparedStatement.setString(2, lastName);
++            preparedStatement.setByte(3, age);
++            preparedStatement.executeUpdate();
+             System.out.println("Save user!");
+         } catch (
+                 SQLException e) {
+@@ -54,9 +54,9 @@
+     }
+ 
+     public void removeUserById(long id) {
+-        try (PreparedStatement stmt = conn.prepareStatement(REMOVE_USER, Statement.RETURN_GENERATED_KEYS)) {
+-            stmt.setLong(1, id);
+-            stmt.executeUpdate();
++        try (PreparedStatement preparedStatement = connection.prepareStatement(REMOVE_USER, Statement.RETURN_GENERATED_KEYS)) {
++            preparedStatement.setLong(1, id);
++            preparedStatement.executeUpdate();
+             System.out.println("Remove user!");
+         } catch (
+                 SQLException e) {
+@@ -66,8 +66,8 @@
+     }
+ 
+     public List<User> getAllUsers() {
+-        try (PreparedStatement stmt = conn.prepareStatement(GET_ALL_USERS)) {
+-            ResultSet rs = stmt.executeQuery();
++        try (PreparedStatement preparedStatement = connection.prepareStatement(GET_ALL_USERS)) {
++            ResultSet rs = preparedStatement.executeQuery();
+             List<User> users = new ArrayList<>();
+             while (rs.next()) {
+                 User user = new User();
+@@ -87,8 +87,8 @@
+     }
+ 
+     public void cleanUsersTable() {
+-        try (Statement stmt = conn.createStatement()) {
+-            stmt.executeUpdate(CLEAN_TABLE);
++        try (Statement statement = connection.createStatement()) {
++            statement.executeUpdate(CLEAN_TABLE);
+             System.out.println("Clean table!");
+         } catch (SQLException e) {
+             throw new RuntimeException(e);
+Index: .idea/misc.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"ProjectRootManager\" version=\"2\" default=\"true\">\r\n    <output url=\"file://$PROJECT_DIR$/out\" />\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/misc.xml b/.idea/misc.xml
+--- a/.idea/misc.xml	(revision 3bcce1f38345444045b1dee4dd745a4f0ebf7ba3)
++++ b/.idea/misc.xml	(date 1729451079270)
+@@ -1,6 +1,14 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <project version="4">
+-  <component name="ProjectRootManager" version="2" default="true">
++  <component name="ExternalStorageConfigurationManager" enabled="true" />
++  <component name="MavenProjectsManager">
++    <option name="originalFiles">
++      <list>
++        <option value="$PROJECT_DIR$/pom.xml" />
++      </list>
++    </option>
++  </component>
++  <component name="ProjectRootManager" version="2" languageLevel="JDK_17" default="true" project-jdk-name="17" project-jdk-type="JavaSDK">
+     <output url="file://$PROJECT_DIR$/out" />
+   </component>
+ </project>
+\ No newline at end of file
+Index: .idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"AutoImportSettings\">\r\n    <option name=\"autoReloadType\" value=\"SELECTIVE\" />\r\n  </component>\r\n  <component name=\"ChangeListManager\">\r\n    <list default=\"true\" id=\"f183950a-a143-478c-851c-f59b42eea687\" name=\"Changes\" comment=\"JDBC project Task-1\" />\r\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\r\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\r\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\r\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\r\n  </component>\r\n  <component name=\"Git.Settings\">\r\n    <option name=\"RECENT_BRANCH_BY_REPOSITORY\">\r\n      <map>\r\n        <entry key=\"$PROJECT_DIR$\" value=\"JDBC\" />\r\n      </map>\r\n    </option>\r\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\r\n  </component>\r\n  <component name=\"GitHubPullRequestSearchHistory\"><![CDATA[{\r\n  \"lastFilter\": {\r\n    \"state\": \"OPEN\",\r\n    \"assignee\": \"Bydanoff\"\r\n  }\r\n}]]></component>\r\n  <component name=\"GithubPullRequestsUISettings\"><![CDATA[{\r\n  \"selectedUrlAndAccountId\": {\r\n    \"url\": \"https://github.com/Bydanoff/ITMTask1.git\",\r\n    \"accountId\": \"ae3fd2e7-0ce6-4132-9e98-395c56c2c2c2\"\r\n  }\r\n}]]></component>\r\n  <component name=\"ProjectColorInfo\"><![CDATA[{\r\n  \"associatedIndex\": 3\r\n}]]></component>\r\n  <component name=\"ProjectId\" id=\"2nhwnQX7M2rcJV1qodYsy5pwipm\" />\r\n  <component name=\"ProjectLevelVcsManager\" settingsEditedManually=\"true\" />\r\n  <component name=\"ProjectViewState\">\r\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\r\n    <option name=\"showLibraryContents\" value=\"true\" />\r\n  </component>\r\n  <component name=\"PropertiesComponent\"><![CDATA[{\r\n  \"keyToString\": {\r\n    \"RunOnceActivity.ShowReadmeOnStart\": \"true\",\r\n    \"git-widget-placeholder\": \"Hibernate\",\r\n    \"kotlin-language-version-configured\": \"true\",\r\n    \"node.js.detected.package.eslint\": \"true\",\r\n    \"node.js.detected.package.tslint\": \"true\",\r\n    \"node.js.selected.package.eslint\": \"(autodetect)\",\r\n    \"node.js.selected.package.tslint\": \"(autodetect)\",\r\n    \"nodejs_package_manager_path\": \"npm\",\r\n    \"vue.rearranger.settings.migration\": \"true\"\r\n  }\r\n}]]></component>\r\n  <component name=\"SharedIndexes\">\r\n    <attachedChunks>\r\n      <set>\r\n        <option value=\"bundled-jdk-9f38398b9061-39b83d9b5494-intellij.indexing.shared.core-IU-241.18034.62\" />\r\n        <option value=\"bundled-js-predefined-1d06a55b98c1-0b3e54e931b4-JavaScript-IU-241.18034.62\" />\r\n      </set>\r\n    </attachedChunks>\r\n  </component>\r\n  <component name=\"SpellCheckerSettings\" RuntimeDictionaries=\"0\" Folders=\"0\" CustomDictionaries=\"0\" DefaultDictionary=\"application-level\" UseSingleDictionary=\"true\" transferred=\"true\" />\r\n  <component name=\"TaskManager\">\r\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\r\n      <changelist id=\"f183950a-a143-478c-851c-f59b42eea687\" name=\"Changes\" comment=\"\" />\r\n      <created>1729438781442</created>\r\n      <option name=\"number\" value=\"Default\" />\r\n      <option name=\"presentableId\" value=\"Default\" />\r\n      <updated>1729438781442</updated>\r\n      <workItem from=\"1729438782559\" duration=\"655000\" />\r\n    </task>\r\n    <task id=\"LOCAL-00001\" summary=\"JDBC project Task-1\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1729439198337</created>\r\n      <option name=\"number\" value=\"00001\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00001\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1729439198337</updated>\r\n    </task>\r\n    <option name=\"localTasksCounter\" value=\"2\" />\r\n    <servers />\r\n  </component>\r\n  <component name=\"TypeScriptGeneratedFilesManager\">\r\n    <option name=\"version\" value=\"3\" />\r\n  </component>\r\n  <component name=\"VcsManagerConfiguration\">\r\n    <MESSAGE value=\"JDBC project Task-1\" />\r\n    <option name=\"LAST_COMMIT_MESSAGE\" value=\"JDBC project Task-1\" />\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+--- a/.idea/workspace.xml	(revision 3bcce1f38345444045b1dee4dd745a4f0ebf7ba3)
++++ b/.idea/workspace.xml	(date 1729451079267)
+@@ -4,7 +4,12 @@
+     <option name="autoReloadType" value="SELECTIVE" />
+   </component>
+   <component name="ChangeListManager">
+-    <list default="true" id="f183950a-a143-478c-851c-f59b42eea687" name="Changes" comment="JDBC project Task-1" />
++    <list default="true" id="df97920a-3825-405d-b89e-c4a4d4344955" name="Changes" comment="Hibernate project Task-1">
++      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/src/main/java/jm/task/core/jdbc/dao/UserDaoHibernateImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jm/task/core/jdbc/dao/UserDaoHibernateImpl.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/src/main/java/jm/task/core/jdbc/dao/UserDaoJDBCImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jm/task/core/jdbc/dao/UserDaoJDBCImpl.java" afterDir="false" />
++    </list>
+     <option name="SHOW_DIALOG" value="false" />
+     <option name="HIGHLIGHT_CONFLICTS" value="true" />
+     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+@@ -18,21 +23,21 @@
+     </option>
+     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+   </component>
+-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+-  "lastFilter": {
+-    "state": "OPEN",
+-    "assignee": "Bydanoff"
++  <component name="GitHubPullRequestSearchHistory">{
++  &quot;lastFilter&quot;: {
++    &quot;state&quot;: &quot;OPEN&quot;,
++    &quot;assignee&quot;: &quot;Bydanoff&quot;
+   }
+-}]]></component>
+-  <component name="GithubPullRequestsUISettings"><![CDATA[{
+-  "selectedUrlAndAccountId": {
+-    "url": "https://github.com/Bydanoff/ITMTask1.git",
+-    "accountId": "ae3fd2e7-0ce6-4132-9e98-395c56c2c2c2"
++}</component>
++  <component name="GithubPullRequestsUISettings">{
++  &quot;selectedUrlAndAccountId&quot;: {
++    &quot;url&quot;: &quot;https://github.com/Bydanoff/ITMTask1.git&quot;,
++    &quot;accountId&quot;: &quot;ae3fd2e7-0ce6-4132-9e98-395c56c2c2c2&quot;
+   }
+-}]]></component>
+-  <component name="ProjectColorInfo"><![CDATA[{
+-  "associatedIndex": 3
+-}]]></component>
++}</component>
++  <component name="ProjectColorInfo">{
++  &quot;associatedIndex&quot;: 3
++}</component>
+   <component name="ProjectId" id="2nhwnQX7M2rcJV1qodYsy5pwipm" />
+   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+   <component name="ProjectViewState">
+@@ -63,12 +68,13 @@
+   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+   <component name="TaskManager">
+     <task active="true" id="Default" summary="Default task">
+-      <changelist id="f183950a-a143-478c-851c-f59b42eea687" name="Changes" comment="" />
++      <changelist id="df97920a-3825-405d-b89e-c4a4d4344955" name="Changes" comment="Hibernate project Task-1" />
+       <created>1729438781442</created>
+       <option name="number" value="Default" />
+       <option name="presentableId" value="Default" />
+       <updated>1729438781442</updated>
+       <workItem from="1729438782559" duration="655000" />
++      <workItem from="1729450511704" duration="567000" />
+     </task>
+     <task id="LOCAL-00001" summary="JDBC project Task-1">
+       <option name="closed" value="true" />

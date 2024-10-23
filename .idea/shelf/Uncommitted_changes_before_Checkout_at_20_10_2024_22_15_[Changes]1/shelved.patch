@@ -1,0 +1,37 @@
+Index: src/main/java/jm/task/core/jdbc/model/User.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package jm.task.core.jdbc.model;\r\n\r\nimport jakarta.persistence.*;\r\n\r\n@Entity\r\n@Table (name = \"users\")\r\npublic class User {\r\n    @Id\r\n    @Column(name=\"id\")\r\n    @GeneratedValue (strategy = GenerationType.IDENTITY)\r\n    private Long id;\r\n\r\n    @Column (name=\"name\", unique=true, length=100)\r\n    private String name;\r\n\r\n    @Column (name=\"lastName\", unique=true, length=100)\r\n    private String lastName;\r\n\r\n    @Column (name=\"age\", nullable=false)\r\n    private Byte age;\r\n\r\n    public User() {\r\n\r\n    }\r\n\r\n    public User(String name, String lastName, Byte age) {\r\n        this.name = name;\r\n        this.lastName = lastName;\r\n        this.age = age;\r\n    }\r\n\r\n    public Long getId() {\r\n        return id;\r\n    }\r\n\r\n    public void setId(Long id) {\r\n        this.id = id;\r\n    }\r\n\r\n    public String getName() {\r\n        return name;\r\n    }\r\n\r\n    public void setName(String name) {\r\n        this.name = name;\r\n    }\r\n\r\n    public String getLastName() {\r\n        return lastName;\r\n    }\r\n\r\n    public void setLastName(String lastName) {\r\n        this.lastName = lastName;\r\n    }\r\n\r\n    public Byte getAge() {\r\n        return age;\r\n    }\r\n\r\n    public void setAge(Byte age) {\r\n        this.age = age;\r\n    }\r\n\r\n    @Override\r\n    public String toString() {\r\n        return \"User{\" +\r\n                \"id=\" + id +\r\n                \", name='\" + name + '\\'' +\r\n                \", lastName='\" + lastName + '\\'' +\r\n                \", age=\" + age +\r\n                '}';\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/jm/task/core/jdbc/model/User.java b/src/main/java/jm/task/core/jdbc/model/User.java
+--- a/src/main/java/jm/task/core/jdbc/model/User.java	
++++ b/src/main/java/jm/task/core/jdbc/model/User.java	
+@@ -3,20 +3,20 @@
+ import jakarta.persistence.*;
+ 
+ @Entity
+-@Table (name = "users")
++@Table(name = "users")
+ public class User {
+     @Id
+-    @Column(name="id")
+-    @GeneratedValue (strategy = GenerationType.IDENTITY)
++    @Column(name = "id")
++    @GeneratedValue(strategy = GenerationType.IDENTITY)
+     private Long id;
+ 
+-    @Column (name="name", unique=true, length=100)
++    @Column(name = "name", unique = true, length = 100)
+     private String name;
+ 
+-    @Column (name="lastName", unique=true, length=100)
++    @Column(name = "lastName", unique = true, length = 100)
+     private String lastName;
+ 
+-    @Column (name="age", nullable=false)
++    @Column(name = "age", nullable = false)
+     private Byte age;
+ 
+     public User() {

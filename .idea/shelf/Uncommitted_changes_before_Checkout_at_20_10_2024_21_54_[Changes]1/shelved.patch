@@ -1,0 +1,100 @@
+Index: src/main/java/jm/task/core/jdbc/dao/UserDaoJDBCImpl.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package jm.task.core.jdbc.dao;\r\n\r\nimport jm.task.core.jdbc.model.User;\r\nimport jm.task.core.jdbc.util.Util;\r\n\r\nimport java.sql.*;\r\nimport java.util.ArrayList;\r\nimport java.util.List;\r\n\r\npublic class UserDaoJDBCImpl implements UserDao {\r\n    private static final String CREATE_TABLE = \"CREATE TABLE IF NOT EXISTS public.users (id BIGSERIAL PRIMARY KEY, name VARCHAR(50) NOT NULL, lastname VARCHAR(50) NOT NULL, age SMALLINT NOT NULL);\";\r\n    private static final String DROP_TABLE = \"DROP TABLE IF EXISTS public.users\";\r\n    private static final String CLEAN_TABLE = \"TRUNCATE TABLE public.users\";\r\n    private static final String SAVE_USER = \"INSERT INTO public.users (name, lastname, age) VALUES (?,?,?)\";\r\n    private static final String REMOVE_USER = \"DELETE FROM public.users WHERE id = ?\";\r\n    private static final String GET_ALL_USERS = \"SELECT id, name, lastname, age FROM public.users\";\r\n    private Connection conn;\r\n\r\n    public UserDaoJDBCImpl() {\r\n        conn = Util.getConnection();\r\n    }\r\n\r\n    public void createUsersTable() {\r\n        try (Statement stmt = conn.createStatement()) {\r\n            stmt.executeUpdate(CREATE_TABLE);\r\n            System.out.println(\"Create table!\");\r\n        } catch (SQLException e) {\r\n            throw new RuntimeException(e);\r\n        }\r\n    }\r\n\r\n    public void dropUsersTable() {\r\n        try (Statement stmt = conn.createStatement()) {\r\n            stmt.executeUpdate(DROP_TABLE);\r\n            System.out.println(\"Drop table!\");\r\n        } catch (SQLException e) {\r\n            throw new RuntimeException(e);\r\n        }\r\n\r\n    }\r\n\r\n    public void saveUser(String name, String lastName, byte age) {\r\n        try (PreparedStatement stmt = conn.prepareStatement(SAVE_USER, Statement.RETURN_GENERATED_KEYS)) {\r\n            stmt.setString(1, name);\r\n            stmt.setString(2, lastName);\r\n            stmt.setByte(3, age);\r\n            stmt.executeUpdate();\r\n            System.out.println(\"Save user!\");\r\n        } catch (\r\n                SQLException e) {\r\n            throw new RuntimeException(e);\r\n        }\r\n\r\n    }\r\n\r\n    public void removeUserById(long id) {\r\n        try (PreparedStatement stmt = conn.prepareStatement(REMOVE_USER, Statement.RETURN_GENERATED_KEYS)) {\r\n            stmt.setLong(1, id);\r\n            stmt.executeUpdate();\r\n            System.out.println(\"Remove user!\");\r\n        } catch (\r\n                SQLException e) {\r\n            throw new RuntimeException(e);\r\n        }\r\n\r\n    }\r\n\r\n    public List<User> getAllUsers() {\r\n        try (PreparedStatement stmt = conn.prepareStatement(GET_ALL_USERS)) {\r\n            ResultSet rs = stmt.executeQuery();\r\n            List<User> users = new ArrayList<>();\r\n            while (rs.next()) {\r\n                User user = new User();\r\n                user.setId(rs.getLong(\"id\"));\r\n                user.setName(rs.getString(\"name\"));\r\n                user.setLastName(rs.getString(\"lastname\"));\r\n                user.setAge(rs.getByte(\"age\"));\r\n                users.add(user);\r\n                System.out.println(\"Loaded user! \" + user.getId());\r\n            }\r\n            return users;\r\n\r\n        } catch (\r\n                SQLException e) {\r\n            throw new RuntimeException(e);\r\n        }\r\n    }\r\n\r\n    public void cleanUsersTable() {\r\n        try (Statement stmt = conn.createStatement()) {\r\n            stmt.executeUpdate(CLEAN_TABLE);\r\n            System.out.println(\"Clean table!\");\r\n        } catch (SQLException e) {\r\n            throw new RuntimeException(e);\r\n        }\r\n\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/jm/task/core/jdbc/dao/UserDaoJDBCImpl.java b/src/main/java/jm/task/core/jdbc/dao/UserDaoJDBCImpl.java
+--- a/src/main/java/jm/task/core/jdbc/dao/UserDaoJDBCImpl.java	
++++ b/src/main/java/jm/task/core/jdbc/dao/UserDaoJDBCImpl.java	
+@@ -21,8 +21,8 @@
+     }
+ 
+     public void createUsersTable() {
+-        try (Statement stmt = conn.createStatement()) {
+-            stmt.executeUpdate(CREATE_TABLE);
++        try (Statement statement = conn.createStatement()) {
++            statement.executeUpdate(CREATE_TABLE);
+             System.out.println("Create table!");
+         } catch (SQLException e) {
+             throw new RuntimeException(e);
+@@ -30,8 +30,8 @@
+     }
+ 
+     public void dropUsersTable() {
+-        try (Statement stmt = conn.createStatement()) {
+-            stmt.executeUpdate(DROP_TABLE);
++        try (Statement statement = conn.createStatement()) {
++            statement.executeUpdate(DROP_TABLE);
+             System.out.println("Drop table!");
+         } catch (SQLException e) {
+             throw new RuntimeException(e);
+@@ -40,11 +40,11 @@
+     }
+ 
+     public void saveUser(String name, String lastName, byte age) {
+-        try (PreparedStatement stmt = conn.prepareStatement(SAVE_USER, Statement.RETURN_GENERATED_KEYS)) {
+-            stmt.setString(1, name);
+-            stmt.setString(2, lastName);
+-            stmt.setByte(3, age);
+-            stmt.executeUpdate();
++        try (PreparedStatement preparedStatement = conn.prepareStatement(SAVE_USER, Statement.RETURN_GENERATED_KEYS)) {
++            preparedStatement.setString(1, name);
++            preparedStatement.setString(2, lastName);
++            preparedStatement.setByte(3, age);
++            preparedStatement.executeUpdate();
+             System.out.println("Save user!");
+         } catch (
+                 SQLException e) {
+@@ -54,9 +54,9 @@
+     }
+ 
+     public void removeUserById(long id) {
+-        try (PreparedStatement stmt = conn.prepareStatement(REMOVE_USER, Statement.RETURN_GENERATED_KEYS)) {
+-            stmt.setLong(1, id);
+-            stmt.executeUpdate();
++        try (PreparedStatement preparedStatement = conn.prepareStatement(REMOVE_USER, Statement.RETURN_GENERATED_KEYS)) {
++            preparedStatement.setLong(1, id);
++            preparedStatement.executeUpdate();
+             System.out.println("Remove user!");
+         } catch (
+                 SQLException e) {
+@@ -66,8 +66,8 @@
+     }
+ 
+     public List<User> getAllUsers() {
+-        try (PreparedStatement stmt = conn.prepareStatement(GET_ALL_USERS)) {
+-            ResultSet rs = stmt.executeQuery();
++        try (PreparedStatement preparedStatement = conn.prepareStatement(GET_ALL_USERS)) {
++            ResultSet rs = preparedStatement.executeQuery();
+             List<User> users = new ArrayList<>();
+             while (rs.next()) {
+                 User user = new User();
+@@ -87,8 +87,8 @@
+     }
+ 
+     public void cleanUsersTable() {
+-        try (Statement stmt = conn.createStatement()) {
+-            stmt.executeUpdate(CLEAN_TABLE);
++        try (Statement statement = conn.createStatement()) {
++            statement.executeUpdate(CLEAN_TABLE);
+             System.out.println("Clean table!");
+         } catch (SQLException e) {
+             throw new RuntimeException(e);
+Index: .idea/modules.xml
+===================================================================
+diff --git a/.idea/modules.xml b/.idea/modules.xml
+deleted file mode 100644
+--- a/.idea/modules.xml	
++++ /dev/null	
+@@ -1,8 +0,0 @@
+-<?xml version="1.0" encoding="UTF-8"?>
+-<project version="4">
+-  <component name="ProjectModuleManager">
+-    <modules>
+-      <module fileurl="file://$PROJECT_DIR$/.idea/ITMTask1.iml" filepath="$PROJECT_DIR$/.idea/ITMTask1.iml" />
+-    </modules>
+-  </component>
+-</project>
+\ No newline at end of file
