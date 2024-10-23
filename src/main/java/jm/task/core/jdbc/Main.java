@@ -13,11 +13,10 @@ public class Main {
         service.saveUser("User3", "LastName3", (byte) 21);
         service.saveUser("User4", "LastName4", (byte) 18);
         service.removeUserById(1);
-        /*service.getAllUsers().forEach(System.out::println);
+        service.getAllUsers().forEach(System.out::println);
 
         service.cleanUsersTable();
         service.getAllUsers().forEach(System.out::println);
-*/
-        //service.dropUsersTable();
+        service.dropUsersTable();
     }
 }

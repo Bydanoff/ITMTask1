@@ -2,16 +2,11 @@ package jm.task.core.jdbc.dao;
 
 import jm.task.core.jdbc.exception.OperationException;
 import jm.task.core.jdbc.model.User;
-import jm.task.core.jdbc.util.Util;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
-import org.hibernate.mapping.Property;
-
-import java.util.Properties;
 import java.util.logging.Logger;
 import java.util.logging.Level;
-
 import java.util.List;
 
 public class UserDaoHibernateImpl implements UserDao {
